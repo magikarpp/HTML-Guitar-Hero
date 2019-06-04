@@ -20,13 +20,17 @@ let missed = 0;
 let total_notes = 0;
 let bad_timing = 0;
 
+let health = document.getElementById("health");
+
 document.addEventListener("keydown", buttonPress);
 document.addEventListener("keyup", buttonRelease);
 document.getElementById("easy").addEventListener("click", estart);
 document.getElementById("medium").addEventListener("click", mstart);
 document.getElementById("hard").addEventListener("click", hstart);
+document.getElementById("campaign").addEventListener("click", cstart);
 
 document.getElementById("score-screen").style.visibility = "hidden";
+document.getElementById("health").style.visibility = "hidden";
 
 function estart(){
   speed = 500;
@@ -37,16 +41,25 @@ function mstart(){
   start();
 }
 function hstart(){
-  speed = 100;
+  speed = 175;
   start();
+}
+
+function cstart(){
+
 }
 
 function start(){
   start_time = performance.now();
   active = 1;
+
+  health.style.visibility = "visible";
+  healthChange();
+
   document.getElementById("easy").style.visibility = "hidden";
   document.getElementById("medium").style.visibility = "hidden";
   document.getElementById("hard").style.visibility = "hidden";
+  document.getElementById("campaign").style.visibility = "hidden";
 
   while(active == 1){
     setTimeout(tick, count);
@@ -56,6 +69,25 @@ function start(){
     }
   }
 
+}
+function healthChange(){
+  if(score <= 0){
+    endGame();
+    return;
+  }
+
+  let temp = score/25;
+
+  if(temp > 1) temp = 1;
+
+  let healthbar = 17*(1-temp) + 33;
+
+  let temp2 = 255-(255/(1/temp));
+
+  health.style.marginLeft = healthbar + "%";
+  health.style.marginRight = healthbar + "%";
+
+  health.style.backgroundColor = "rgb(" + temp2 + ",100,0)";
 }
 
 function buttonPress(event){
@@ -67,7 +99,6 @@ function buttonPress(event){
   let color1 = "";
   let color2 = "";
   if(active == 1){
-    (console.log("Active = " + active + ". Key Pressed Down."));
     if(event.which == 65){
       temp = "r" + board_rows + "c1";
       temp1 = "r" + (board_rows - 1) + "c1";
@@ -156,6 +187,8 @@ function buttonPress(event){
     document.getElementById(temp).style.backgroundColor = color;
     document.getElementById(temp1).style.backgroundColor = color1;
     document.getElementById(temp2).style.backgroundColor = color2;
+
+    healthChange();
   }
 }
 
@@ -199,8 +232,7 @@ function buttonRelease(event){
 function tick(){
   if(active == 1){
     timer++;
-    if(score <= 0 || timer > end_timer){
-      active = 0;
+    if(timer > end_timer){
       endGame();
       return;
     }
@@ -280,19 +312,22 @@ function tick(){
       line_4 = true;
     }
   }
+
+  healthChange();
 }
 
 function endGame(){
-  console.log("Active = " + active + ". Activate endGame.");
+  active = 0;
   if(score <= 0) document.getElementById("timing").innerHTML = "<span style=\"color: Magenta\">You Lost!</span>";
   else document.getElementById("timing").innerHTML = "<span style=\"color: Magenta\">You Won!</span>";
 
-  document.getElementById("score").innerHTML = Math.round(100*(((performance.now() - start_time)*hit)/(60*(missed+bad_timing)))/100);
+  health.style.visibility = "hidden";
+  score = Math.round(100*(((performance.now() - start_time)*hit)/(60*(missed+bad_timing)))/100);
+
+  document.getElementById("score").innerHTML = score;
   document.getElementById("score-screen").style.visibility = "visible";
   document.getElementById("accuracy").innerHTML = Math.round(100*((hit/total_notes)*100)/100) + "%";
   document.getElementById("hit").innerHTML = hit;
   document.getElementById("missed").innerHTML = missed;
   document.getElementById("bad-timing").innerHTML = bad_timing;
-
-  active = 0;
 }
