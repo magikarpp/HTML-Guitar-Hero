@@ -12,17 +12,21 @@ let score = 25;
 let speed = 500;
 let count = 1000;
 
+let timer = 0;
+let end_timer = 100;
+
+let hit = 0;
+let missed = 0;
+let total_notes = 0;
+let bad_timing = 0;
+
 document.addEventListener("keydown", buttonPress);
 document.addEventListener("keyup", buttonRelease);
 document.getElementById("easy").addEventListener("click", estart);
 document.getElementById("medium").addEventListener("click", mstart);
 document.getElementById("hard").addEventListener("click", hstart);
 
-main();
-
-function main(){
-
-}
+document.getElementById("score-screen").style.visibility = "hidden";
 
 function estart(){
   speed = 500;
@@ -47,8 +51,11 @@ function start(){
   while(active == 1){
     setTimeout(tick, count);
     count = count + speed;
-    if(count > (speed * 1000)) break;
+    if(count > (speed * speed * end_timer)){
+      break;
+    }
   }
+
 }
 
 function buttonPress(event){
@@ -60,6 +67,7 @@ function buttonPress(event){
   let color1 = "";
   let color2 = "";
   if(active == 1){
+    (console.log("Active = " + active + ". Key Pressed Down."));
     if(event.which == 65){
       temp = "r" + board_rows + "c1";
       temp1 = "r" + (board_rows - 1) + "c1";
@@ -73,8 +81,10 @@ function buttonPress(event){
         document.getElementById("timing").innerHTML = "<span style=\"color: Lime\">Nice!</span>"
         document.getElementById("r" + board_rows + "c1").innerHTML = "-";
         line_1 = false;
+        hit++;
       } else{
         score--;
+        bad_timing++;
         document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Missed!</span>"
       }
       document.getElementById("score").innerHTML = score;
@@ -92,8 +102,10 @@ function buttonPress(event){
         document.getElementById("timing").innerHTML = "<span style=\"color: Lime\">Nice!</span>"
         document.getElementById("r" + board_rows + "c2").innerHTML = "-";
         line_2 = false;
+        hit++;
       } else{
         score--;
+        bad_timing++;
         document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Missed!</span>"
       }
       document.getElementById("score").innerHTML = score;
@@ -111,8 +123,10 @@ function buttonPress(event){
         document.getElementById("timing").innerHTML = "<span style=\"color: Lime\">Nice!</span>"
         document.getElementById("r" + board_rows + "c3").innerHTML = "-";
         line_3 = false;
+        hit++;
       } else{
         score--;
+        bad_timing++;
         document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Missed!</span>"
       }
       document.getElementById("score").innerHTML = score;
@@ -130,8 +144,10 @@ function buttonPress(event){
         document.getElementById("timing").innerHTML = "<span style=\"color: Lime\">Nice!</span>"
         document.getElementById("r" + board_rows + "c4").innerHTML = "-";
         line_4 = false;
+        hit++;
       } else{
         score--;
+        bad_timing++;
         document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Missed!</span>"
       }
       document.getElementById("score").innerHTML = score;
@@ -181,82 +197,102 @@ function buttonRelease(event){
 }
 
 function tick(){
-  if(score <= 0){
-    endGame();
-    return;
-  }
+  if(active == 1){
+    timer++;
+    if(score <= 0 || timer > end_timer){
+      active = 0;
+      endGame();
+      return;
+    }
 
-  let r_num = Math.floor(Math.random() * (board_columns - 1));
+    let number = board_columns - 1;
+    if(speed < 251) number = board_columns;
+    let r_num = Math.floor(Math.random() * number);
 
-  for(let i = 0; i < r_num; i++){
-    let r_place = Math.floor((Math.random() * board_columns)+1);
-    let shape = "";
-    if(r_place == 1) shape = "A";
-    if(r_place == 2) shape = "S";
-    if(r_place == 3) shape = "K";
-    if(r_place == 4) shape = "L";
-    document.getElementById("r1c" + r_place).innerHTML = shape;
-  }
+    for(let i = 0; i < r_num; i++){
+      let r_place = Math.floor((Math.random() * board_columns)+1);
+      let shape = "";
+      if(r_place == 1) shape = "A";
+      if(r_place == 2) shape = "S";
+      if(r_place == 3) shape = "K";
+      if(r_place == 4) shape = "L";
+      document.getElementById("r1c" + r_place).innerHTML = shape;
+    }
 
-  for(let i = board_rows; i > 0; i--){
-    for(let j = board_columns; j > 0; j--){
-      let id = "r" + i + "c" + j;
-      let current = document.getElementById(id).innerHTML;
+    for(let i = 1; i < board_columns + 1; i++){
+      if(document.getElementById("r1c" + i).innerHTML != "-") total_notes++;
+    }
 
-      if(current != "-"){
-        let temp = current;
-        document.getElementById(id).innerHTML = "-";
-        if(i+1 > 7){
-          if(line_1 == true){
-            line_1 = false;
-            score = score - 2;
-            document.getElementById("score").innerHTML = score;
-            document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
+    for(let i = board_rows; i > 0; i--){
+      for(let j = board_columns; j > 0; j--){
+        let id = "r" + i + "c" + j;
+        let current = document.getElementById(id).innerHTML;
+
+        if(current != "-"){
+          let temp = current;
+          document.getElementById(id).innerHTML = "-";
+          if(i+1 > 7){
+            if(line_1 == true){
+              line_1 = false;
+              score = score - 2;
+              document.getElementById("score").innerHTML = score;
+              document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
+              missed++;
+            }
+            if(line_2 == true){
+              line_2 = false;
+              score = score - 2;
+              document.getElementById("score").innerHTML = score;
+              document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
+              missed++;
+            }
+            if(line_3 == true){
+              line_3 = false;
+              score = score - 2;
+              document.getElementById("score").innerHTML = score;
+              document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
+              missed++;
+            }
+            if(line_4 == true){
+              line_4 = false;
+              score = score - 2;
+              document.getElementById("score").innerHTML = score;
+              document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
+              missed++;
+            }
+          } else{
+            document.getElementById("r" + (i+1) + "c" + j).innerHTML = temp;
           }
-          if(line_2 == true){
-            line_2 = false;
-            score = score - 2;
-            document.getElementById("score").innerHTML = score;
-            document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
-          }
-          if(line_3 == true){
-            line_3 = false;
-            score = score - 2;
-            document.getElementById("score").innerHTML = score;
-            document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
-          }
-          if(line_4 == true){
-            line_4 = false;
-            score = score - 2;
-            document.getElementById("score").innerHTML = score;
-            document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
-          }
-        } else{
-          document.getElementById("r" + (i+1) + "c" + j).innerHTML = temp;
         }
       }
     }
-  }
 
-  if(document.getElementById("r" + board_rows + "c1").innerHTML != "-"){
-    line_1 = true;
-  }
-  if(document.getElementById("r" + board_rows + "c2").innerHTML != "-"){
-    line_2 = true;
-  }
-  if(document.getElementById("r" + board_rows + "c3").innerHTML != "-"){
-    line_3 = true;
-  }
-  if(document.getElementById("r" + board_rows + "c4").innerHTML != "-"){
-    line_4 = true;
+    if(document.getElementById("r" + board_rows + "c1").innerHTML != "-"){
+      line_1 = true;
+    }
+    if(document.getElementById("r" + board_rows + "c2").innerHTML != "-"){
+      line_2 = true;
+    }
+    if(document.getElementById("r" + board_rows + "c3").innerHTML != "-"){
+      line_3 = true;
+    }
+    if(document.getElementById("r" + board_rows + "c4").innerHTML != "-"){
+      line_4 = true;
+    }
   }
 }
 
 function endGame(){
-  if(active == 1){
-    document.getElementById("score").innerHTML = Math.round(100*((performance.now() - start_time)/60)/100);
-  }
-  active = 0;
+  console.log("Active = " + active + ". Activate endGame.");
+  if(score <= 0) document.getElementById("timing").innerHTML = "<span style=\"color: Magenta\">You Lost!</span>";
+  else document.getElementById("timing").innerHTML = "<span style=\"color: Magenta\">You Won!</span>";
 
-  document.getElementById("timing").innerHTML = "<span style=\"color: Magenta\">You Lost!</span>";
+  document.getElementById("score").innerHTML = Math.round(100*(((performance.now() - start_time)*hit)/(60*(missed+bad_timing)))/100);
+  document.getElementById("score-screen").style.visibility = "visible";
+  document.getElementById("accuracy").innerHTML = Math.round(100*((hit/total_notes)*100)/100) + "%";
+  document.getElementById("hit").innerHTML = hit;
+  document.getElementById("missed").innerHTML = missed;
+  document.getElementById("bad-timing").innerHTML = bad_timing;
+
+  active = 0;
 }
