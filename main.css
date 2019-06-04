@@ -5,3 +5,12 @@
 .Lfont {
   font-size: 200%;
 }
+
+#r7 {
+  text-align: center;
+  border-style: solid;
+  border-width: 1px;
+  border-color: Magenta;
+  margin-left: 35%;
+  margin-right: 35%;
+}

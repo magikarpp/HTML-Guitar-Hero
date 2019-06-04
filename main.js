@@ -9,6 +9,7 @@ let line_3 = false;
 let line_4 = false;
 
 let score = 25;
+let speed = 500;
 let count = 1000;
 
 document.addEventListener("keydown", buttonPress);
@@ -24,35 +25,19 @@ function main(){
 }
 
 function estart(){
-  let speed = 500;
-  start_time = performance.now();
-  active = 1;
-  document.getElementById("easy").style.visibility = "hidden";
-  document.getElementById("medium").style.visibility = "hidden";
-  document.getElementById("hard").style.visibility = "hidden";
-
-  while(active == 1){
-    setTimeout(tick, count);
-    count = count + speed;
-    if(count > (speed * 1000)) break;
-  }
+  speed = 500;
+  start();
 }
 function mstart(){
-  let speed = 250;
-  start_time = performance.now();
-  active = 1;
-  document.getElementById("easy").style.visibility = "hidden";
-  document.getElementById("medium").style.visibility = "hidden";
-  document.getElementById("hard").style.visibility = "hidden";
-
-  while(active == 1){
-    setTimeout(tick, count);
-    count = count + speed;
-    if(count > (speed * 1000)) break;
-  }
+  speed = 250;
+  start();
 }
 function hstart(){
-  let speed = 100;
+  speed = 100;
+  start();
+}
+
+function start(){
   start_time = performance.now();
   active = 1;
   document.getElementById("easy").style.visibility = "hidden";
@@ -74,87 +59,88 @@ function buttonPress(event){
   let color = "";
   let color1 = "";
   let color2 = "";
+  if(active == 1){
+    if(event.which == 65){
+      temp = "r" + board_rows + "c1";
+      temp1 = "r" + (board_rows - 1) + "c1";
+      temp2 = "r" + (board_rows - 2) + "c1";
+      color = "DarkGreen";
+      color1 = "LimeGreen";
+      color2 = "PaleGreen"
 
-  if(event.which == 65){
-    temp = "r" + board_rows + "c1";
-    temp1 = "r" + (board_rows - 1) + "c1";
-    temp2 = "r" + (board_rows - 2) + "c1";
-    color = "DarkGreen";
-    color1 = "LimeGreen";
-    color2 = "PaleGreen"
-
-    if(line_1 == true) {
-      score++;
-      document.getElementById("timing").innerHTML = "<span style=\"color: Lime\">Nice!</span>"
-      document.getElementById("r" + board_rows + "c1").innerHTML = "-";
-      line_1 = false;
-    } else{
-      score--;
-      document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Missed!</span>"
+      if(line_1 == true) {
+        score++;
+        document.getElementById("timing").innerHTML = "<span style=\"color: Lime\">Nice!</span>"
+        document.getElementById("r" + board_rows + "c1").innerHTML = "-";
+        line_1 = false;
+      } else{
+        score--;
+        document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Missed!</span>"
+      }
+      document.getElementById("score").innerHTML = score;
     }
-    document.getElementById("score").innerHTML = score;
-  }
-  if(event.which == 83){
-    temp = "r" + board_rows + "c2";
-    temp1 = "r" + (board_rows - 1) + "c2";
-    temp2 = "r" + (board_rows - 2) + "c2";
-    color = "DarkRed";
-    color1 = "IndianRed";
-    color2 = "Pink"
+    if(event.which == 83){
+      temp = "r" + board_rows + "c2";
+      temp1 = "r" + (board_rows - 1) + "c2";
+      temp2 = "r" + (board_rows - 2) + "c2";
+      color = "DarkRed";
+      color1 = "IndianRed";
+      color2 = "Pink"
 
-    if(line_2 == true) {
-      score = score++;
-      document.getElementById("timing").innerHTML = "<span style=\"color: Lime\">Nice!</span>"
-      document.getElementById("r" + board_rows + "c2").innerHTML = "-";
-      line_2 = false;
-    } else{
-      score--;
-      document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Missed!</span>"
+      if(line_2 == true) {
+        score = score++;
+        document.getElementById("timing").innerHTML = "<span style=\"color: Lime\">Nice!</span>"
+        document.getElementById("r" + board_rows + "c2").innerHTML = "-";
+        line_2 = false;
+      } else{
+        score--;
+        document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Missed!</span>"
+      }
+      document.getElementById("score").innerHTML = score;
     }
-    document.getElementById("score").innerHTML = score;
-  }
-  if(event.which == 75){
-    temp = "r" + board_rows + "c3";
-    temp1 = "r" + (board_rows - 1) + "c3";
-    temp2 = "r" + (board_rows - 2) + "c3";
-    color = "Gold";
-    color1 = "Khaki";
-    color2 = "PapayaWhip"
+    if(event.which == 75){
+      temp = "r" + board_rows + "c3";
+      temp1 = "r" + (board_rows - 1) + "c3";
+      temp2 = "r" + (board_rows - 2) + "c3";
+      color = "Gold";
+      color1 = "Khaki";
+      color2 = "PapayaWhip"
 
-    if(line_3 == true) {
-      score = score++;
-      document.getElementById("timing").innerHTML = "<span style=\"color: Lime\">Nice!</span>"
-      document.getElementById("r" + board_rows + "c3").innerHTML = "-";
-      line_3 = false;
-    } else{
-      score--;
-      document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Missed!</span>"
+      if(line_3 == true) {
+        score = score++;
+        document.getElementById("timing").innerHTML = "<span style=\"color: Lime\">Nice!</span>"
+        document.getElementById("r" + board_rows + "c3").innerHTML = "-";
+        line_3 = false;
+      } else{
+        score--;
+        document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Missed!</span>"
+      }
+      document.getElementById("score").innerHTML = score;
     }
-    document.getElementById("score").innerHTML = score;
-  }
-  if(event.which == 76){
-    temp = "r" + board_rows + "c4";
-    temp1 = "r" + (board_rows - 1) + "c4";
-    temp2 = "r" + (board_rows - 2) + "c4";
-    color = "DarkSlateBlue";
-    color1 = "MediumSlateBlue";
-    color2 = "Plum"
+    if(event.which == 76){
+      temp = "r" + board_rows + "c4";
+      temp1 = "r" + (board_rows - 1) + "c4";
+      temp2 = "r" + (board_rows - 2) + "c4";
+      color = "DarkSlateBlue";
+      color1 = "MediumSlateBlue";
+      color2 = "Plum"
 
-    if(line_4 == true) {
-      score = score++;
-      document.getElementById("timing").innerHTML = "<span style=\"color: Lime\">Nice!</span>"
-      document.getElementById("r" + board_rows + "c4").innerHTML = "-";
-      line_4 = false;
-    } else{
-      score--;
-      document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Missed!</span>"
+      if(line_4 == true) {
+        score = score++;
+        document.getElementById("timing").innerHTML = "<span style=\"color: Lime\">Nice!</span>"
+        document.getElementById("r" + board_rows + "c4").innerHTML = "-";
+        line_4 = false;
+      } else{
+        score--;
+        document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Missed!</span>"
+      }
+      document.getElementById("score").innerHTML = score;
     }
-    document.getElementById("score").innerHTML = score;
-  }
 
-  document.getElementById(temp).style.backgroundColor = color;
-  document.getElementById(temp1).style.backgroundColor = color1;
-  document.getElementById(temp2).style.backgroundColor = color2;
+    document.getElementById(temp).style.backgroundColor = color;
+    document.getElementById(temp1).style.backgroundColor = color1;
+    document.getElementById(temp2).style.backgroundColor = color2;
+  }
 }
 
 function buttonRelease(event){
@@ -267,6 +253,10 @@ function tick(){
 }
 
 function endGame(){
+  if(active == 1){
+    document.getElementById("score").innerHTML = Math.round(100*((performance.now() - start_time)/60)/100);
+  }
   active = 0;
+
   document.getElementById("timing").innerHTML = "<span style=\"color: Magenta\">You Lost!</span>";
 }
