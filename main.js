@@ -10,6 +10,9 @@ let line_4 = false;
 
 let score = 25;
 let speed = 500;
+let temp = 0;
+let accumulation = 0;
+let temp_acc = 0;
 let count = 1000;
 
 let timer = 0;
@@ -28,9 +31,11 @@ document.getElementById("easy").addEventListener("click", estart);
 document.getElementById("medium").addEventListener("click", mstart);
 document.getElementById("hard").addEventListener("click", hstart);
 document.getElementById("campaign").addEventListener("click", cstart);
+document.getElementById("restart").addEventListener("click", restart);
 
 document.getElementById("score-screen").style.visibility = "hidden";
 document.getElementById("health").style.visibility = "hidden";
+document.getElementById("restart").style.visibility = "hidden";
 
 function estart(){
   speed = 500;
@@ -46,10 +51,15 @@ function hstart(){
 }
 
 function cstart(){
-
+  speed = 500;
+  accumulation = 5;
+  temp_acc = 4;
+  end_timer = 500;
+  start();
 }
 
 function start(){
+
   start_time = performance.now();
   active = 1;
 
@@ -63,7 +73,11 @@ function start(){
 
   while(active == 1){
     setTimeout(tick, count);
-    count = count + speed;
+    temp = speed - accumulation;
+    if(temp < 175) temp = 175;
+
+    count = count + temp;
+    accumulation = accumulation + temp_acc;
     if(count > (speed * speed * end_timer)){
       break;
     }
@@ -237,8 +251,15 @@ function tick(){
       return;
     }
 
-    let number = board_columns - 1;
-    if(speed < 251) number = board_columns;
+    let number = board_columns - 2;
+    if(accumulation == 5){
+      if(timer >= 15) board_columns - 1;
+      if(timer >= 35) board_columns;
+    } else{
+      if(temp < 251) number = board_columns - 1;
+      if(temp < 171) number = board_columns;
+    }
+
     let r_num = Math.floor(Math.random() * number);
 
     for(let i = 0; i < r_num; i++){
@@ -266,28 +287,28 @@ function tick(){
           if(i+1 > 7){
             if(line_1 == true){
               line_1 = false;
-              score = score - 2;
+              score--;
               document.getElementById("score").innerHTML = score;
               document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
               missed++;
             }
             if(line_2 == true){
               line_2 = false;
-              score = score - 2;
+              score--;
               document.getElementById("score").innerHTML = score;
               document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
               missed++;
             }
             if(line_3 == true){
               line_3 = false;
-              score = score - 2;
+              score--;
               document.getElementById("score").innerHTML = score;
               document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
               missed++;
             }
             if(line_4 == true){
               line_4 = false;
-              score = score - 2;
+              score--;
               document.getElementById("score").innerHTML = score;
               document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
               missed++;
@@ -322,6 +343,7 @@ function endGame(){
   else document.getElementById("timing").innerHTML = "<span style=\"color: Magenta\">You Won!</span>";
 
   health.style.visibility = "hidden";
+  document.getElementById("restart").style.visibility = "visible";
   score = Math.round(100*(((performance.now() - start_time)*hit)/(60*(missed+bad_timing)))/100);
 
   document.getElementById("score").innerHTML = score;
@@ -330,4 +352,8 @@ function endGame(){
   document.getElementById("hit").innerHTML = hit;
   document.getElementById("missed").innerHTML = missed;
   document.getElementById("bad-timing").innerHTML = bad_timing;
+}
+
+function restart(){
+  location.reload(true);
 }
