@@ -61,19 +61,24 @@
 
     <div class="center">
       <h3><span id="timing">Good Luck!</span></h3>
-      <p>Score: <span id="score">25</span></p>
+      <p id="combodisp">Combo: <font size="48"><span style="color: magenta;" id="combo">0</span></font></p>
+      <p id="health">&nbsp</p>
       <button id="campaign">CAMPAIGN</button><button id="easy">EASY</button><button id="medium">MEDIUM</button><button id="hard">HARD</button>
+      <div id="warning">
+        <p>&nbsp</p>
+        <p>Press 'ctrl' + '-' or 'ctrl' + '+' to adjust screen size to fit the game.</p>
+        <p>**80% zoom out recommended**</p>
+      </div>
 			<br>
 			<button id="restart">TRY AGAIN</button>
     </div>
 
-		<p class="center" id="health">&nbsp</p>
-
 		<div id="score-screen" class="center">
+      <p>Highest Combo: <span id="hicombo"></span></p>
 			<p>Accuracy: <span id="accuracy"></span></p>
 			<p>Correct Hit: <span id="hit"></span></p>
 			<p>Missed Notes: <span id="missed"></span></p>
-			<p>Bad Timing: <span id="bad-timing"></span></p>
+      <p>Bad Timing: <span id="bad-timing"></span></p>
 		</div>
 
 

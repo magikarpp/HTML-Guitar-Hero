@@ -14,6 +14,8 @@ let temp = 0;
 let end_timer = 0;
 let mode = "";
 let noteCount = 2;
+let combo = 0;
+let hicombo = 0;
 
 let timer = 0;
 
@@ -32,8 +34,9 @@ document.getElementById("hard").addEventListener("click", hstart);
 document.getElementById("campaign").addEventListener("click", cstart);
 document.getElementById("restart").addEventListener("click", restart);
 
-document.getElementById("score-screen").style.visibility = "hidden";
-document.getElementById("health").style.visibility = "hidden";
+document.getElementById("score-screen").style.display = "none";
+document.getElementById("health").style.display = "none";
+document.getElementById("combodisp").style.display = "none";
 document.getElementById("restart").style.visibility = "hidden";
 
 function estart(){
@@ -71,22 +74,34 @@ function start(){
   start_time = performance.now();
   active = 1;
 
-  health.style.visibility = "visible";
+  health.style.display = "block";
+  document.getElementById("combodisp").style.display = "block";
   healthChange();
 
-  document.getElementById("easy").style.visibility = "hidden";
-  document.getElementById("medium").style.visibility = "hidden";
-  document.getElementById("hard").style.visibility = "hidden";
-  document.getElementById("campaign").style.visibility = "hidden";
+  document.getElementById("easy").style.display = "none";
+  document.getElementById("medium").style.display = "none";
+  document.getElementById("hard").style.display = "none";
+  document.getElementById("campaign").style.display = "none";
+  document.getElementById("warning").style.display = "none";
 
   if(active == 1){
-    gameLoop();
+    setTimeout(gameLoop, 1500);
   }
 
   function gameLoop(){
     tick();
     if(active == 1){
-      if(mode == "c"){
+      if(mode == "e"){
+        if(Math.floor(Math.random() * 10) == 1) noteCount = 2;
+        else noteCount = 1;
+      } else if(mode == "m"){
+        if(Math.floor(Math.random() * 10) == 1) noteCount = 3;
+        else noteCount = 2;
+      } else if(mode == "h"){
+        if(Math.floor(Math.random() * 10) == 1) noteCount = 3;
+        else noteCount = 2;
+      }
+      else if(mode == "c"){
         if(timer > 45){
           speed = 200;
         }
@@ -161,12 +176,18 @@ function buttonPress(event){
         document.getElementById("r" + board_rows + "c1").innerHTML = "-";
         line_1 = false;
         hit++;
+        combo++;
+        if(combo > hicombo){
+          hicombo = combo;
+        }
+        document.getElementById("combo").innerHTML = combo;
       } else{
         score--;
         bad_timing++;
+        combo = 0;
+        document.getElementById("combo").innerHTML = combo;
         document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Missed!</span>"
       }
-      document.getElementById("score").innerHTML = score;
     }
     if(event.which == 83){
       temp = "r" + board_rows + "c2";
@@ -182,12 +203,18 @@ function buttonPress(event){
         document.getElementById("r" + board_rows + "c2").innerHTML = "-";
         line_2 = false;
         hit++;
+        combo++;
+        if(combo > hicombo){
+          hicombo = combo;
+        }
+        document.getElementById("combo").innerHTML = combo;
       } else{
         score--;
         bad_timing++;
+        combo = 0;
+        document.getElementById("combo").innerHTML = combo;
         document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Missed!</span>"
       }
-      document.getElementById("score").innerHTML = score;
     }
     if(event.which == 75){
       temp = "r" + board_rows + "c3";
@@ -203,12 +230,18 @@ function buttonPress(event){
         document.getElementById("r" + board_rows + "c3").innerHTML = "-";
         line_3 = false;
         hit++;
+        combo++;
+        if(combo > hicombo){
+          hicombo = combo;
+        }
+        document.getElementById("combo").innerHTML = combo;
       } else{
         score--;
         bad_timing++;
+        combo = 0;
+        document.getElementById("combo").innerHTML = combo;
         document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Missed!</span>"
       }
-      document.getElementById("score").innerHTML = score;
     }
     if(event.which == 76){
       temp = "r" + board_rows + "c4";
@@ -224,12 +257,18 @@ function buttonPress(event){
         document.getElementById("r" + board_rows + "c4").innerHTML = "-";
         line_4 = false;
         hit++;
+        combo++;
+        if(combo > hicombo){
+          hicombo = combo;
+        }
+        document.getElementById("combo").innerHTML = combo;
       } else{
         score--;
         bad_timing++;
+        combo = 0;
+        document.getElementById("combo").innerHTML = combo;
         document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Missed!</span>"
       }
-      document.getElementById("score").innerHTML = score;
     }
 
     if(temp){
@@ -313,28 +352,28 @@ function tick(){
             if(line_1 == true){
               line_1 = false;
               score--;
-              document.getElementById("score").innerHTML = score;
+      
               document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
               missed++;
             }
             if(line_2 == true){
               line_2 = false;
               score--;
-              document.getElementById("score").innerHTML = score;
+      
               document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
               missed++;
             }
             if(line_3 == true){
               line_3 = false;
               score--;
-              document.getElementById("score").innerHTML = score;
+      
               document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
               missed++;
             }
             if(line_4 == true){
               line_4 = false;
               score--;
-              document.getElementById("score").innerHTML = score;
+      
               document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
               missed++;
             }
@@ -367,16 +406,15 @@ function endGame(){
   if(score <= 0) document.getElementById("timing").innerHTML = "<span style=\"color: Magenta\">You Lost!</span>";
   else document.getElementById("timing").innerHTML = "<span style=\"color: Magenta\">You Won!</span>";
 
-  health.style.visibility = "hidden";
+  health.style.display = "none";
   document.getElementById("restart").style.visibility = "visible";
-  score = Math.round(100*(((performance.now() - start_time)*hit)/(60*(missed+bad_timing)))/100);
-
-  document.getElementById("score").innerHTML = score;
-  document.getElementById("score-screen").style.visibility = "visible";
+  score = Math.round(100*(((performance.now() - start_time)*hit)/(60*(missed+bad_timing)))/100)
+  document.getElementById("score-screen").style.display = "block ";
   document.getElementById("accuracy").innerHTML = Math.round(100*((hit/total_notes)*100)/100) + "%";
   document.getElementById("hit").innerHTML = hit;
   document.getElementById("missed").innerHTML = missed;
   document.getElementById("bad-timing").innerHTML = bad_timing;
+  document.getElementById("hicombo").innerHTML = hicombo;
 }
 
 function restart(){
