@@ -11,12 +11,11 @@ let line_4 = false;
 let score = 25;
 let speed = 500;
 let temp = 0;
-let accumulation = 0;
-let temp_acc = 0;
-let count = 1000;
+let end_timer = 0;
+let mode = "";
+let noteCount = 2;
 
 let timer = 0;
-let end_timer = 100;
 
 let hit = 0;
 let missed = 0;
@@ -38,23 +37,32 @@ document.getElementById("health").style.visibility = "hidden";
 document.getElementById("restart").style.visibility = "hidden";
 
 function estart(){
-  speed = 500;
+  speed = 200;
+  mode = "e";
+  end_timer = 75;
+  noteCount = 1;
   start();
 }
 function mstart(){
-  speed = 250;
+  speed = -75;
+  mode = "m";
+  end_timer = 200;
+  noteCount = 2;
   start();
 }
 function hstart(){
-  speed = 175;
+  speed = -150;
+  mode = "h";
+  end_timer = 300;
+  noteCount = 2;
   start();
 }
 
 function cstart(){
-  speed = 500;
-  accumulation = 5;
-  temp_acc = 4;
-  end_timer = 500;
+  speed = 300;
+  mode = "c";
+  end_timer = 99999;
+  noteCount = 1;
   start();
 }
 
@@ -71,15 +79,41 @@ function start(){
   document.getElementById("hard").style.visibility = "hidden";
   document.getElementById("campaign").style.visibility = "hidden";
 
-  while(active == 1){
-    setTimeout(tick, count);
-    temp = speed - accumulation;
-    if(temp < 175) temp = 175;
+  if(active == 1){
+    gameLoop();
+  }
 
-    count = count + temp;
-    accumulation = accumulation + temp_acc;
-    if(count > (speed * speed * end_timer)){
-      break;
+  function gameLoop(){
+    tick();
+    if(active == 1){
+      if(mode == "c"){
+        if(timer > 45){
+          speed = 200;
+        }
+        if(timer > 100){
+          noteCount = 2;
+        }
+        if(timer > 155){
+          speed = 0;
+        }
+        if(timer > 245){
+          if(Math.floor(Math.random() * 2)) noteCount = 3;
+          else noteCount = 2;
+        }
+        if(timer > 335){
+          speed = -75;
+        }
+        if(timer > 535){
+          speed = -125;
+        }
+        if(timer > 850){
+          speed = -150;
+        }
+      }
+      if(timer > end_timer){
+        endGame();
+      }
+      setTimeout(gameLoop, 325 + speed);
     }
   }
 
@@ -198,9 +232,11 @@ function buttonPress(event){
       document.getElementById("score").innerHTML = score;
     }
 
-    document.getElementById(temp).style.backgroundColor = color;
-    document.getElementById(temp1).style.backgroundColor = color1;
-    document.getElementById(temp2).style.backgroundColor = color2;
+    if(temp){
+      document.getElementById(temp).style.backgroundColor = color;
+      document.getElementById(temp1).style.backgroundColor = color1;
+      document.getElementById(temp2).style.backgroundColor = color2;
+    }
 
     healthChange();
   }
@@ -237,30 +273,19 @@ function buttonRelease(event){
     temp2 = "r" + (board_rows - 2) + "c4";
     color = "white";
   }
-
-  document.getElementById(temp).style.backgroundColor = color;
-  document.getElementById(temp1).style.backgroundColor = color;
-  document.getElementById(temp2).style.backgroundColor = color;
+  
+  if(temp){
+    document.getElementById(temp).style.backgroundColor = color;
+    document.getElementById(temp1).style.backgroundColor = color;
+    document.getElementById(temp2).style.backgroundColor = color;
+  }
 }
 
 function tick(){
   if(active == 1){
     timer++;
-    if(timer > end_timer){
-      endGame();
-      return;
-    }
 
-    let number = board_columns - 2;
-    if(accumulation == 5){
-      if(timer >= 15) board_columns - 1;
-      if(timer >= 35) board_columns;
-    } else{
-      if(temp < 251) number = board_columns - 1;
-      if(temp < 171) number = board_columns;
-    }
-
-    let r_num = Math.floor(Math.random() * number);
+    let r_num = Math.floor(Math.random() * (noteCount + 1));
 
     for(let i = 0; i < r_num; i++){
       let r_place = Math.floor((Math.random() * board_columns)+1);
