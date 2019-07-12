@@ -352,6 +352,8 @@ function tick(){
             if(line_1 == true){
               line_1 = false;
               score--;
+              combo = 0;
+              document.getElementById("combo").innerHTML = 0;
       
               document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
               missed++;
@@ -359,6 +361,8 @@ function tick(){
             if(line_2 == true){
               line_2 = false;
               score--;
+              combo = 0;
+              document.getElementById("combo").innerHTML = 0;
       
               document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
               missed++;
@@ -366,6 +370,8 @@ function tick(){
             if(line_3 == true){
               line_3 = false;
               score--;
+              combo = 0;
+              document.getElementById("combo").innerHTML = 0;
       
               document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
               missed++;
@@ -373,6 +379,8 @@ function tick(){
             if(line_4 == true){
               line_4 = false;
               score--;
+              combo = 0;
+              document.getElementById("combo").innerHTML = 0;
       
               document.getElementById("timing").innerHTML = "<span style=\"color: Crimson\">Oof!</span>";
               missed++;
